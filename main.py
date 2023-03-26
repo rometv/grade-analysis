@@ -12,6 +12,6 @@ def load_all(result_file):
         sys.exit(f'EXIT: {file_error}')
 
 
-results = ""
+results = "5.-kodutöö-esitamine-tähtaeg-15.11-kell-23.59.zip"
 subs, users, per_student, aio = load_all(results)
 analyse(subs, users, per_student, aio)
