@@ -9,7 +9,7 @@ from sklearn.cluster import KMeans
 
 def analyse(subs, users, per_student, aio):
     # Initialise the dataframe
-    df = pd.DataFrame(aio, columns=['id', 'time', 'grade', 'points', 'tasks'])
+    df = pd.DataFrame(aio, columns=['id', 'time', 'grade'])
     df = df.loc[~(df == 0).all(axis=1)]
     df.dropna()
 
@@ -44,11 +44,11 @@ def basic_stats(subs, users, summary, df, student):
     print(f'Highest number of submissions by user: {max(summary["num_submissions"])}')
     print(f'Lowest number of submissions by user: {min(summary["num_submissions"])}')
     print(
-        f'Mean of submission grades excluding zero-grade submissions: {df[df["grade"] != 0].mean()["grade"] * 100 : .1f}%')
-    print(f'Mean of submission grades: {df["grade"].mean() * 100:.1f}%')
-    print(f'Mean of maximum (presumably last submission) grades: {summary["max_grade"].mean() * 100:.1f}%')
-    print(f'Mean of compiling submissions: {summary["num_submissions"].mean():.2f}')
-    print(f'Absolute mean of submissions: {subs / users: .1f}')
+        f'Mean of submission grades excluding zero-grade submissions: {round(df[df["grade"] != 0].mean()["grade"], 2) * 100}%')
+    print(f'Mean of submission grades: {round(df["grade"].mean(), 2) * 100}%')
+    print(f'Mean of maximum (presumably last submission) grades: {round(summary["max_grade"].mean(), 2) * 100}%')
+    print(f'Mean of compiling submissions: {round(summary["num_submissions"].mean(), 1)}')
+    print(f'Absolute mean of submissions: {round(subs / users, 1)}')
 
 
 def clustering(df):
