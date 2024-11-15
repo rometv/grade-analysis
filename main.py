@@ -1,17 +1,38 @@
-import sys
+from datetime import datetime
 
-from analysis import analyse
-from unpacker import unpack
+from airflow import DAG
+from airflow.decorators import task
+
+with DAG(
+        dag_id='generate_analysis_charts',
+        schedule='*/3 * * * *',  # <-- Cron expression
+        start_date=datetime(2023, 4, 8),
+        catchup=False,
+        tags=["analysis"]) as dag:
+    """
+    # Data unpacking
+    Data is unpacked using the unpacker function.
+    """
 
 
-def load_all(result_file):
-    try:
-        return unpack(result_file)
-    except FileNotFoundError:
-        file_error = f'Filename "{result_file}" was not found!'
-        sys.exit(f'EXIT: {file_error}')
+    @task()
+    def unpack_data(data_url):
+        from unpacker import unpack
+        return unpack(data_url)
 
 
-results = "5.-kodutöö-esitamine-tähtaeg-15.11-kell-23.59.zip"
-subs, users, per_student, aio = load_all(results)
-analyse(subs, users, per_student, aio)
+    """
+    # Data analysing
+    Data is analysed and visualised using the Altair library.
+    """
+
+
+    @task()
+    def analyse_data(submissions, sys_users, submissions_per_student, all_in_one):
+        from analysis import analyse
+        analyse(submissions, sys_users, submissions_per_student, all_in_one)
+
+
+    url = 'https://drive.google.com/uc?export=download&id=1IxGl4Oj2mYPyULvLRS1B_UmbXE8N984s'
+    subs, users, per_student, aio = unpack_data(url)
+    analyse_data(subs, users, per_student, aio)

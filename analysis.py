@@ -1,88 +1,89 @@
-import sys
 from datetime import datetime
 
-import matplotlib.pyplot as plt
-import numpy as np
+import altair as alt
 import pandas as pd
-from sklearn.cluster import KMeans
+from altair import Chart
+from tabulate import tabulate
+
+from data_classes import Data
+from dataframes import get_dataframes
+
+root_dir = 'charts/'
 
 
-def analyse(subs, users, per_student, aio):
-    # Initialise the dataframe
-    df = pd.DataFrame(aio, columns=['id', 'time', 'grade', 'points', 'tasks'])
-    df = df.loc[~(df == 0).all(axis=1)]
-    df.dropna()
-
-    # Finding summaries..
-    summary = df.groupby('id').agg({'grade': ['min', 'max', 'count', 'mean']})
-    summary.columns = ['min_grade', 'max_grade', 'num_submissions', 'mean']
-
-    # Getting some basic stats
-    basic_stats(subs, users, summary, df, per_student)
-
-    # Clustering
-    # df = clustering(df)
-
-    # Some plots
-    avg_grade_to_submissions(summary)
-    max_grade_to_submissions(summary)
-    plt.show()
-
-    # Exit
-    exit_message = "Program end."
-    sys.exit(f"EXIT: {exit_message}")
+def save(chart: Chart):
+    time = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    chart.save(fp=f'{root_dir}{chart.name}.html')
 
 
-def basic_stats(subs, users, summary, df, student):
-    print(f'Total submissions: {subs}')
-    print(f'Graded (compiling) submissions: {df.shape[0]}')
-    print(f'Noncompilable submissions: {subs - df.shape[0]}')
-    print(f'Users: {users}')
-    print(f'Users with valid (compiling) solutions: {len(student)}')
-    print(f'Highest minimum grade: {max(summary["min_grade"]) * 100}%')
-    print(f'Highest maximum grade: {max(summary["max_grade"]) * 100}%')
-    print(f'Highest number of submissions by user: {max(summary["num_submissions"])}')
-    print(f'Lowest number of submissions by user: {min(summary["num_submissions"])}')
-    print(
-        f'Mean of submission grades excluding zero-grade submissions: {df[df["grade"] != 0].mean()["grade"] * 100 : .1f}%')
-    print(f'Mean of submission grades: {df["grade"].mean() * 100:.1f}%')
-    print(f'Mean of maximum (presumably last submission) grades: {summary["max_grade"].mean() * 100:.1f}%')
-    print(f'Mean of compiling submissions: {summary["num_submissions"].mean():.2f}')
-    print(f'Absolute mean of submissions: {subs / users: .1f}')
+def table(df: pd.DataFrame):
+    print(tabulate(df, headers='keys', tablefmt='fancy_grid'))
 
 
-def clustering(df):
-    df['ts'] = [datetime.timestamp(ts) for ts in df['time']]
-    X = df[['ts', 'grade']]
-
-    kmeans = KMeans(n_clusters=8)
-    kmeans.fit(X)
-
-    df['cluster'] = kmeans.labels_
-
-    return df
-
-
-def avg_grade_to_submissions(df):
+def analyse(data: Data):
     """
-        Plots the average user grade to user submissions scatter plot. Color indicates the maximum grade.
-    :param df:
-    :return:
+    Main function to analyse the data
+    Parameters
+    ----------
+    data: Data object containing the data to be analysed, of type data_classes.Data.
     """
-    fig, ax = plt.subplots(1, figsize=(10, 12))
-    plt.scatter(df['num_submissions'], df['mean'], c=df['max_grade'], cmap='plasma')
-    plt.colorbar(label='Max Grade')
-    plt.xlabel('Number of Submissions')
-    plt.ylabel('Average Grade')
+    student_df, submission_df, point_group_df = get_dataframes(data)
+
+    # print(tabulate(student_df[:10], headers='keys', tablefmt='psql'))
+
+    # testing(df=student_df)
+    last_submission_date_by_grade(df=student_df)
+    # general(student_df)
+    # grade_change_by_submissions(student_df, submission_df, point_group_df)
 
 
-def max_grade_to_submissions(df):
-    """
-        Plots the maximum grade to number of submissions scatter plot.
-    :param df:
-    :return:
-    """
-    fig, ax = plt.subplots(1, figsize=(14, 7))
-    plt.scatter(df['num_submissions'], df['max_grade'], c=np.random.rand(len(df)), alpha=0.7)
-    plt.xlabel('Number of Submissions')
-    plt.ylabel('Maximum Grade')
+def general(student_df: pd.DataFrame):
+    table(student_df)
+    chart = alt.Chart(student_df, name="general").mark_point().encode(
+        x='grade:N',
+        y='Last submission date'
+    ).interactive()
+
+    save(chart)
+
+
+def grade_change_by_submissions(student_df: pd.DataFrame, submission_df: pd.DataFrame, point_group_df: pd.DataFrame):
+    submission_data_sorted = submission_df.sort_values(by=['Student_ID', 'Submission_Time'])
+    submission_data_sorted['Grade_Change'] = submission_data_sorted.groupby('Student_ID')['Submission_Grade'].diff()
+    submission_data_sorted = submission_data_sorted.fillna(0)
+    submission_data_sorted.loc[submission_data_sorted['Grade_Change'] < 0, 'Grade_Change'] = 0
+    submission_data_sorted = submission_data_sorted[submission_data_sorted['Submission_Grade'] > 0]
+
+    # submission_data_sorted = submission_data_sorted[submission_data_sorted['Submission_Time']].resample('H').mean()
+
+    # print(submission_data_sorted[:30])
+    chart = alt.Chart(submission_data_sorted[:1000], name="submissions").mark_point().encode(
+        alt.Y('Submission_Grade:N', title='Submission Grade'),
+        alt.X('Submission_Time:N', title='Submission Time'),
+        size='Grade_Change:N',
+        color='Student_ID'
+    ).interactive().properties(width=500, height=500)
+    save(chart)
+    print(len(submission_data_sorted))
+    table(submission_data_sorted)
+
+
+def last_submission_date_by_grade(df: pd.DataFrame):
+    # Filtering
+    df = df[df['Time taken'] < 1500000]
+    df = df[df['Last submission date'] != 0]
+    df = df[df['Last submission date'] < datetime(2023, 11, 8)]
+    q = df['Last submission date'].quantile(0.99)
+    print("quantile", q)
+    df = df[df['Last submission date'] <= q]
+    df = df.infer_objects()
+    df = df.reset_index()
+    print(tabulate(df, headers='keys', tablefmt='psql'))
+    # print(df.dtypes)
+    scatter_plot = alt.Chart(df, name="general").mark_circle().encode(
+        alt.Y('Max_Grade:N').bin(),
+        alt.X('Last submission date').bin(),
+        size='Submissions:N'
+    ).interactive()
+
+    save(scatter_plot)
