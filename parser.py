@@ -72,7 +72,8 @@ def parse(moodle_file: ZipFile) -> Data:
                             task_name = j[0].strip()
                             points_all = re.findall(re_points_all, j[1])
 
-                            point_groups.append(PointGroup(submission_id, task_name, points_all[0], points_all[1]))
+                            if len(points_all) > 0: point_groups.append(
+                                PointGroup(submission_id, task_name, points_all[0], points_all[1]))
 
                         ungrouped = re.findall(re_ungrouped, reg_point_groups[0])
 

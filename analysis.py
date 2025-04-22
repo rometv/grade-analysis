@@ -3,6 +3,7 @@ import pandas as pd
 
 from helpers import filter_dataframe
 from data_store import get_df
+import numpy as np
 
 
 # alt.data_transformers.disable_max_rows() # Max rows error b like
@@ -152,6 +153,55 @@ def starting_time_effect_on_point_groups() -> alt.FacetChart:
         gridDash=[2, 2],
         labelColor='#cfd8dc',
         titleColor='#ffffff'
+    )
+
+
+def grade_improvement() -> alt.Chart:
+    improvement_df = get_df('submission_df').sort_values(by=['Student_ID', 'Submission_Time'])
+    improvement_df["Submission_Number"] = improvement_df.groupby("Student_ID").cumcount() + 1
+    # Bad idea
+    # return alt.Chart(improvement_df).mark_line(point=True).encode(
+    #   x=alt.X('Submission_Number:O', title="Esituse arv"),
+    #  y=alt.Y("Submission_Grade:Q", title="Hinne"),
+    #   color="Student_ID:N"
+    # ).properties(title="Esituste paranemine ajas")
+
+    improvement_df["submission_bucket"] = pd.cut(
+        improvement_df["Submission_Number"],
+        bins=pd.interval_range(start=1, end=improvement_df["Submission_Number"].max() + 5, freq=5),
+        include_lowest=True
+    )
+
+    max_sub = improvement_df["Submission_Number"].max()
+    bin_size = 5
+
+    bin_edges = list(range(1, int(np.ceil(max_sub / bin_size) * bin_size) + bin_size, bin_size))
+
+    improvement_df["bucket"] = pd.cut(
+        improvement_df["Submission_Number"],
+        bins=bin_edges,
+        include_lowest=True
+    )
+    improvement_df["bucket_str"] = improvement_df["bucket"].apply(
+        lambda x: f"{int(x.left)}–{int(x.right - 1)}" if pd.notnull(x) else "Muu"
+    )
+
+    category_order = sorted(improvement_df["bucket_str"].dropna().unique(),
+                            key=lambda s: int(s.split("–")[0]))
+
+    improvement_df["bucket_str"] = pd.Categorical(
+        improvement_df["bucket_str"],
+        categories=category_order,
+        ordered=True
+    )
+
+    return alt.Chart(improvement_df).mark_boxplot().encode(
+        x=alt.X("bucket_str:N", title="Esituste hulk"),
+        y=alt.Y("Submission_Grade:Q", title="Hinne")
+    ).properties(
+        width=600,
+        height=400,
+        title="Hinde jaotumine esituste arvu lõikes"
     )
 
 

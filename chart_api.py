@@ -1,7 +1,7 @@
 from flask.views import MethodView
 
 from analysis import submission_count_timeline, submission_count_heatmap, last_grading_point_group_distribution, \
-    starting_time_effect_on_point_groups
+    starting_time_effect_on_point_groups, grade_improvement
 
 
 class BaseChartApi(MethodView):
@@ -26,3 +26,6 @@ class GradingDistributionApi(BaseChartApi):
 
 class StartingTimeEffectOnPointGroups(BaseChartApi):
     chart_funct = staticmethod(starting_time_effect_on_point_groups)
+
+class GradeImprovement(BaseChartApi):
+    chart_funct = staticmethod(grade_improvement)

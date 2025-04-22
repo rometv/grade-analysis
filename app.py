@@ -4,7 +4,8 @@ import shutil
 from flask import Flask, render_template, jsonify, request, redirect, url_for, current_app
 
 from analysis import general_data
-from chart_api import SubmissionChartApi, SubmissionHeatMapApi, GradingDistributionApi, StartingTimeEffectOnPointGroups
+from chart_api import SubmissionChartApi, SubmissionHeatMapApi, GradingDistributionApi, StartingTimeEffectOnPointGroups, \
+    GradeImprovement
 from data_frames import get_dataframes
 from data_store import load_data, get_df
 from unpacker import unpack
@@ -57,6 +58,8 @@ app.add_url_rule(
     "/api/starting_time_effect_on_grading",
     view_func=StartingTimeEffectOnPointGroups.as_view("starting_time_effect_on_grading")
 )
+
+app.add_url_rule("/api/grade_improvement", view_func=GradeImprovement.as_view("grade_improvement"))
 
 
 @app.route('/api/testing', methods=['GET'])

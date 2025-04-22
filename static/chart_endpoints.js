@@ -3,6 +3,7 @@ const charts = [
     ["api/submission_heatmap", "submission_heatmap"],
     ["api/grading_distribution", "grading_dist"],
     ["api/starting_time_effect_on_grading", "starting_time_effect_on_grading"],
+    ["api/grade_improvement", "grade_improvement"]
 ];
 
 $(document).ready(function () {
