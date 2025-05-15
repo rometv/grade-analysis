@@ -1,50 +1,27 @@
-/* !important flag for Bootstrap not overriding me colours */
-
-.datepicker {
-    background-color: var(--clr-surface-a0) !important; /* Dark Grey */
-    color: var(--clr-light-a0) !important; /* White Text */
-    border-radius: 8px;
-    border: 1px solid var(--clr-primary-a30);
-    margin-top: 5px;
-    box-shadow: 0px 4px 8px rgba(79, 120, 214, 0.3);
+.flatpickr-calendar {
+    border: 2px solid #4f78d6;
 }
 
-.datepicker th {
-    color: var(--clr-light-a0) !important;
+.flatpickr-day:hover,
+.flatpickr-day.selected,
+.flatpickr-day.today {
+    background: #4f78d6;
+    color: #fff;
 }
 
-.datepicker table thead tr th {
-    color: var(--clr-primary-a0) !important
+.flatpickr-time input {
+    background-color: #333;
+    color: #fff;
 }
 
-.datepicker table tr td.day {
-    color: var(--clr-light-a0) !important;
+.flatpickr-months,
+.flatpickr-month,
+.flatpickr-weekdaycontainer {
+    background-color: #2a2a38
 }
 
-.datepicker table tr td.day:hover {
-    background-color: var(--clr-primary-a30) !important;
-    color: var(--clr-dark-a0) !important;
-    border-radius: 5px;
-}
-
-.datepicker table tr td.active,
-.datepicker table tr td.active:hover,
-.datepicker table tr td.active:focus {
-    background-color: var(--clr-primary-a0) !important; /* Your Primary Blue */
-    color: var(--clr-light-a0) !important; /* White Text */
-    border-radius: 5px;
-}
-
-
-.datepicker table tr td.today,
-.datepicker table tr td.today:hover {
-    background-color: var(--clr-primary-a30) !important; /* Lighter Blue */
-    color: var(--clr-dark-a0) !important; /* Dark Text */
-    font-weight: bold;
-    border: 1px solid var(--clr-primary-a10) !important;
-}
-
-.datepicker table tr td.disabled {
-    color: var(--clr-surface-a50) !important;
-    text-decoration: line-through;
+input#date_range {
+    background-color: #2b2b2b;
+    color: #ffffff;
+    border: 2px solid #4f78d6;
 }

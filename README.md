@@ -1,53 +1,49 @@
 ## Grade Analysis Dashboard
 
-#### A web-based interactive dashboard for analysing student submission data. Flask is used for the backend, Altair/Vega for chart rendering and Bootstrap for frontend.
+#### This project provides a web-based interactive dashboard for the analysis of student submission data in programming courses. The backend is implemented using Flask, chart rendering is handled with Altair/Vega, and the frontend is styled with Bootstrap.
 
 ### Features
-- Upload and parse zipped homework submission data
-- Interactive date filtering
-- Dynamic Altair charts rendered with VegaEmbed script
-- Heatmaps, timelines and grading distribution visualisations
-- Centralized data-store for clean architecture
-- Unicode-safe parsing of execution file
-- Class-based chart API with filtering
+- Upload and parse zipped homework submission archives.
+- Interactive date-based filtering of submission data.
+- Dynamic Altair-generated charts rendered via the VegaEmbed library.
+- Visualisations include heatmaps, timelines, and grading distributions.
+- Centralised in-memory data store to support a clean and modular architecture.
+- Unicode-safe parsing of execution logs.
+- Class-based chart API supporting flexible filtering.
 
 ### Project structure
 ```
 grade-analysis/
-├── app.py              # Flask app entry point, routes, upload logic
-├── chart_api.py        # MethodView classes for each chart endpoint 
-├── analysis.py         # Altair chart-generating functions
-├── data_frames.py      # Converts object-oriented data to pandas DataFrames 
-├── data_classes.py     # Data model for Students, Submissions, and PointGroups 
-├── parser.py           # Parses the contents of the uploaded zip file 
-├── unpacker.py         # Unzips and reads in file data, invokes parser 
-├── data_store.py       # Central in-memory store for DataFrames and metadata 
-├── utils.py            # Pure utility functions (e.g. hashing, formatting)
-├── helpers.py          # Flask-related helpers (e.g. get_date_filters) 
+├── analysis.py            # Functions for generating Altair charts
+├── app.py                 # Flask application entry point, routing, and file upload handling
+├── chart_api.py           # MethodView classes for chart endpoints
+├── data_store.py          # Central in-memory store for DataFrames and associated metadata
+├── execution_grammar.py   # Lark parser object and grammar definition
+├── helpers.py             # Helper functions for Flask operations (e.g., date filtering)
+├── parse_homework.py      # Batch-based ZIP archive reader
+├── parser_lark.py         # Main parsing logic
+├── utils.py               # Utility functions (e.g., hashing, formatting)
 ├── templates/
-│ └── index.html        # Main HTML template with VegaEmbed and Datepicker
-├── static/ 
-│ └── scripts.js        # JS logic for chart loading, filtering, and UI 
-├── requirements.txt    # Project dependencies 
-└── README.md           # You're looking at it.
+│ └── dashboard.html       # Dashboard page template
+│ └── upload.html          # Upload form template
+├── static/
+│ └── chart_endpoints.js   # JavaScript for dynamic chart loading
+│ └── datepicker.js        # JavaScript for datepicker functionality
+│ └── other.js             # Other supporting scripts
+├── requirements.txt       # Project dependencies
+└── README.md
 ```
 
-### How to run
-1. Create and activate virtualenv
+### Running the Application
+1. Create and activate a virtual environment.
 2. Install dependencies:
    - pip install -r requirements.txt
-3. Flask run (in venv)
+3. ```flask run``` 
 
-### Uploading data
-The website displays an upload form. Upload a ```.zip``` file containing submission data.
-Once uploaded:
-1. File is unpacked and parsed
-2. Parsed Student objects are then looped over and converted to 4 pandas DataFrames.
-3. Stored in memory (in data_store.py)
-4. User is redirected to the dashboard
-
-### Currently available charts
-- Submission timeline   # Daily submission counts
-- Submission heatmap    # Time of day vs date grid
-- Grading distribution  # Point group data
-- Starting time effect  # How starting time correlates with grade quality
+### Data Upload Procedure
+Upon accessing the upload page, users are prompted to submit a .zip archive containing student submission data.
+The upload process consists of the following steps:
+1. The archive is unpacked and each execution.txt file is parsed.
+2. The parsed data is transformed into four Pandas DataFrames.
+3. The processed data is stored in memory using data_store.py.
+4. The user is redirected to the dashboard for interactive data exploration.

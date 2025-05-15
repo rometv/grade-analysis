@@ -1,26 +1,65 @@
 .vega-bind:hover {
-  filter: drop-shadow(0 0 5px #4f78d6);
-  transition: 0.2s ease;
+    filter: drop-shadow(0 0 5px #4f78d6);
+    transition: 0.2s ease;
 }
 
 .pulse-hover:hover {
-  animation: pulseGlow 1s ease infinite;
+    animation: pulseGlow 1s ease infinite;
 }
 
 @keyframes pulseGlow {
-  0%   { box-shadow: 0 0 5px #4f78d6; }
-  50%  { box-shadow: 0 0 15px #4f78d6; }
-  100% { box-shadow: 0 0 5px #4f78d6; }
+    0% {
+        box-shadow: 0 0 5px #4f78d6;
+    }
+    50% {
+        box-shadow: 0 0 15px #4f78d6;
+    }
+    100% {
+        box-shadow: 0 0 5px #4f78d6;
+    }
 }
 
 @keyframes ambientBorder {
-  0%   { box-shadow: 0 0 8px #4f78d6; }
-  50%  { box-shadow: 0 0 18px #4f78d6; }
-  100% { box-shadow: 0 0 8px #4f78d6; }
+    0% {
+        box-shadow: 0 0 8px #4f78d6;
+    }
+    50% {
+        box-shadow: 0 0 18px #4f78d6;
+    }
+    100% {
+        box-shadow: 0 0 8px #4f78d6;
+    }
 }
 
-.glow-container {
-  animation: ambientBorder 4s ease-in-out infinite;
-  border-radius: 12px;
-  background: #1a1a1a;
+.vg-tooltip {
+    background-color: #222 !important;
+    color: white !important;
+    font-size: 16px !important;
+    font-family: 'Open Sans', sans-serif !important;
+    border-radius: 2px !important;
+    padding: 10px !important;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.vega-bind > label {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    font-size: 17px;
+}
+
+.vega-bind-radio {
+    display: flex;
+    flex-direction: column;
+}
+
+.vega-bind input:focus,
+.vega-bind select:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.vega-bind label input[type="radio"]:focus {
+    outline: none;
+    box-shadow: none;
 }

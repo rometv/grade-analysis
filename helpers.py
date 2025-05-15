@@ -1,32 +1,33 @@
 import pandas as pd
 from flask import request
 
-from data_store import get_df
+from data_store import get
 
 
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    submissions = get_df(
-        'submission_df'
-    )
-
-    start_date = submissions['Submission_Time'].min()
-    end_date = submissions['Submission_Time'].max()
-
+    """ Filters a dataframe based on request arguments."""
     filtered_df = df
+    submissions = get('submission_df')
+
+    start_date = submissions['timestamp'].min()
+    end_date = submissions['timestamp'].max()
+
+    timezone = start_date.tz
 
     start_date_filter = request.args.get("start_date", start_date.strftime('%d/%m/%Y'))
     end_date_filter = request.args.get("end_date", end_date.strftime('%d/%m/%Y'))
 
-    if start_date_filter is not None and end_date_filter is not None:
-        start_date_filter = pd.to_datetime(start_date_filter, format='%d/%m/%Y').strftime('%Y-%m-%d')
-        end_date_filter = pd.to_datetime(end_date_filter, format='%d/%m/%Y').strftime('%Y-%m-%d')
+    start_date_filter = pd.to_datetime(start_date_filter, format='%d/%m/%Y')
+    end_date_filter = pd.to_datetime(end_date_filter, format='%d/%m/%Y')
 
-        start_date_filter = pd.to_datetime(start_date_filter, format='%Y-%m-%d')
-        end_date_filter = pd.to_datetime(end_date_filter, format='%Y-%m-%d')
+    start_date_filter = start_date_filter.tz_localize(timezone)
+    end_date_filter = end_date_filter.tz_localize(timezone)
 
-        if start_date_filter and end_date_filter and start_date_filter < end_date_filter:
-            if start_date_filter >= start_date and end_date_filter <= end_date:
-                filtered_df = filtered_df.drop(df[df['Submission_Time'] <= start_date_filter].index)
-                filtered_df = filtered_df.drop(df[df['Submission_Time'] >= end_date_filter].index)
+    if start_date_filter and end_date_filter and start_date_filter <= end_date_filter:
+        if start_date_filter.date() >= start_date.date() and end_date_filter.date() <= end_date.date():
+            filtered_df = filtered_df[
+                (filtered_df['timestamp'].dt.date >= start_date_filter.date()) &
+                (filtered_df['timestamp'].dt.date <= end_date_filter.date())
+                ].copy()
 
     return filtered_df

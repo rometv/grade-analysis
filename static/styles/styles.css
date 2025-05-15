@@ -1,49 +1,19 @@
+
 body {
-    font-family: "Open Sans", sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    padding-top: 20px;
     background-color: rgb(26, 26, 29);
-}
-
-header {
-    border-radius: 8px;
     color: #fff;
-    padding: 0.5em;
-    text-align: center;
 }
-
-section#dashboard {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin: 1em auto;
-}
-
-#dashboard {
-    width: 50%;
-}
-
-.vega-legend-title, .vega-legend-label {
-    text-shadow: 0 0 4px #4f78d6;
-}
-
 
 .card {
-    background-color: rgb(56, 57, 66);
+    background-color: #1e1e1e;
     border: 2px solid #4f78d6;
-    padding: 1em;
-    margin: 0.5em 0.5em 40px;
     color: white;
-    /*animation: ambientBorder 4s ease-in-out infinite; */
+    transition: box-shadow 0.7s ease;
 }
 
-h2 {
-    font-weight: bold;
-    font-size: 1.5em;
+.card:hover {
+    -webkit-box-shadow: 0px 0px 2px 4px rgba(79, 120, 214, 0.59);
+    box-shadow: 0px 0px 10px 8px rgba(79, 120, 214, 0.59);
 }
 
 .halo {
@@ -51,44 +21,99 @@ h2 {
     box-shadow: 0px 0px 10px 8px rgba(79, 120, 214, 0.59);
 }
 
-.datepicker {
-    background-color: #393E46 !important; /* Dark background */
-    color: #EEEEEE !important; /* Light text */
-    border-radius: 8px;
+.chart {
+    padding: 1rem 0;
 }
 
-.buttons {
-    background-color: #4f78d6 !important;
+footer {
+    background-color: #1e1e1e;
+    color: #aaa;
 }
 
-.fixed-board {
+.filter-card {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-top: 2px solid #4f78d6;
+    border-right: 2px solid #4f78d6;
+    border-bottom: 2px solid #4f78d6;
+    background-color: #1e1e1e;
+    color: #aaa;
     position: fixed;
-    top: 30%;
-    right: 0;
-    transform: translateY(-50%);
-    width: 300px;
-    border: 2px solid #4f78d6;
-    border-radius: 5px;
-    background-color: rgb(56, 57, 66);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    z-index: 1000;
+    left: 0;
+    top: 100px;
+    width: 280px;
+    z-index: 10;
 }
 
-.content-wrapper {
-    margin-right: 320px;
-}
+/*body {*/
+/*    font-family: "Open Sans", sans-serif;*/
+/*    color: white;*/
+/*    padding-top: 20px;*/
+/*    background-color: rgb(26, 26, 29);*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*}*/
 
-@media (max-width: 768px) {
-    .fixed-board {
-        position: static;
-        transform: none;
-        margin: 0 auto;
-        width: 100%;
-        max-width: 300px;
-    }
+/*html, body {*/
+/*    height: 100%;*/
+/*}*/
 
-    .content-wrapper {
-        margin-right: 0;
-    }
-}
+/*.container-fluid {*/
+/*    flex: 1;*/
+/*}*/
+
+
+/*header {*/
+/*    border-radius: 8px;*/
+/*    color: #fff;*/
+/*    padding: 0.5em;*/
+/*    text-align: center;*/
+/*}*/
+
+/*section#dashboard {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: space-between;*/
+/*    margin: 1em auto;*/
+/*}*/
+
+/*#dashboard {*/
+/*    width: 50%;*/
+/*}*/
+
+/*.vega-legend-title, .vega-legend-label {*/
+/*    text-shadow: 0 0 4px #4f78d6;*/
+/*}*/
+
+/*h2 {*/
+/*    font-weight: bold;*/
+/*    font-size: 1.5em;*/
+/*}*/
+
+/*.halo {*/
+/*    -webkit-box-shadow: 0px 0px 2px 4px rgba(79, 120, 214, 0.59);*/
+/*    box-shadow: 0px 0px 10px 8px rgba(79, 120, 214, 0.59);*/
+/*}*/
+
+/*.fixed-board {*/
+/*    background-color: #2a2a38;*/
+/*    border: 2px solid #4f78d6;*/
+/*    border-radius: 4px;*/
+/*    color: white;*/
+/*    position: sticky;*/
+/*    top: 1rem;*/
+/*    width: 400px;*/
+/*    align-self: flex-start;*/
+/*}*/
+
+/*.dashboard-wrapper {*/
+/*    width: 100%;*/
+/*    max-width: 1000px;*/
+/*}*/
+
+/*.footer {*/
+/*    background-color: rgb(56, 57, 66);*/
+/*    color: #aaaaaa;*/
+/*    font-size: 0.9rem;*/
+/*    width: 100%;*/
+/*}*/
